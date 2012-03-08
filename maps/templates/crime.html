@@ -7,7 +7,21 @@
   <style type="text/css">
     body { height:100% }
     #mapdiv { display:block; position:absolute; top:0; left:0; width:100%; height:100%; }
-  </style> 
+    
+    
+    /*@-webkit-keyframes blinky {
+       from { fill: red; stroke: red;}
+       to   { fill: green; stroke: green; }
+    }
+
+    .leaflet-clickable {
+       -webkit-animation-name: blinky;
+       -webkit-animation-duration: 2s;
+       -webkit-animation-timing-function: ease;
+       -webkit-animation-iteration-count: infinite;
+       -webkit-animation-direction: alternate;
+    }*/
+  </style>
 </head>
 
 <body>
@@ -20,18 +34,22 @@
     
     $(document).ready(function () {
         var layers = {
-            cloudmade: new L.TileLayer("http://{s}.tile.cloudmade.com/8ee2a50541944fb9bcedded5165f09d9/997/256/{z}/{x}/{y}.png"),
-            acetate: new L.TileLayer("http://a{s}.acetate.geoiq.com/tiles/acetate/{z}/{x}/{y}.png", {subdomains: ['a1', 'a2', 'a3']})
+            leaflet: new L.TileLayer("http://{s}.tile.cloudmade.com/8ee2a50541944fb9bcedded5165f09d9/997/256/{z}/{x}/{y}.png"),
+            paledawn: new L.TileLayer("http://{s}.tile.cloudmade.com/8ee2a50541944fb9bcedded5165f09d9/998/256/{z}/{x}/{y}.png"),
+            midnight: new L.TileLayer("http://{s}.tile.cloudmade.com/8ee2a50541944fb9bcedded5165f09d9/999/256/{z}/{x}/{y}.png")
         };
         
         map = new L.Map('mapdiv');
         crime_ids = new Array();
         
         var sanfran = new L.LatLng(37.77540, -122.41941);
-        map.addLayer(layers.cloudmade).setView(sanfran, 16);
+        map.addLayer(layers.midnight).setView(sanfran, 16);
         
+        function crime_dot(latlng) { 
+            return new L.Circle(latlng, 10, {color: "#F8CA00"});
+        }
         
-        var crimes = new L.GeoJSON(null, { pointToLayer: function (latlng) { return new L.Circle(latlng, 10); } });
+        var crimes = new L.GeoJSON(null, { pointToLayer: crime_dot });
         
         // attach a popup window to each crime
         crimes.on("featureparse", function (e){
