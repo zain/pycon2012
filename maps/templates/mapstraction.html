@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<head>
+  <title>Maps Tutorial @ PyCon 2012</title>
+  
+  <link href="http://leaflet.cloudmade.com/dist/leaflet.css" media="all" rel="stylesheet" type="text/css" />
+  
+  <style type="text/css">
+    body { height:100% }
+    #mapdiv { display:block; position:absolute; top:0; left:0; width:100%; height:100%; }
+  </style> 
+</head>
+
+<body>
+    <div id="mapdiv"></div>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    
+    {% comment %}
+    <!-- gmaps -->
+    <script type="text/javascript" src="http://www.google.com/jsapi?key=AIzaSyDFpYBZWBeh5EgWFC7RCb42SwGB6kS7_s0"></script>
+    <script type="text/javascript"> google.load("maps", "2.x"); </script>
+    <script src="https://raw.github.com/mapstraction/mxn/master/source/mxn.js?(google)" type="text/javascript"></script>
+    {% endcomment %}
+    
+    {% comment %}
+    <!-- openlayers -->
+    <script src="http://openlayers.org/api/OpenLayers.js"></script>
+    <script src="https://raw.github.com/mapstraction/mxn/master/source/mxn.js?(openlayers)" type="text/javascript"></script>
+    {% endcomment %}
+    
+    <!-- leaflet -->
+    <script src="http://leaflet.cloudmade.com/dist/leaflet.js" type="text/javascript" type="text/javascript"></script>
+    <script src="https://raw.github.com/mapstraction/mxn/master/source/mxn.js?(leaflet)" type="text/javascript"></script>
+    
+    <script type="text/javascript">
+    
+    function crime_refresh(event_name, event_source, event_args) {
+        bounds = event_source.getBounds();
+
+        // geodjango's Polygon.from_bbox() expects this format for the coordinates
+        xmin = bounds.sw.lon;
+        xmax = bounds.ne.lon;
+        ymin = bounds.sw.lat;
+        ymax = bounds.ne.lat;
+        bbox = xmin + "," + ymin + "," + xmax + "," + ymax;
+        
+        url = "/crime.json?bbox=" + bbox;
+
+        $.getJSON(url, function(data) {
+            event_source.addJSON(data);
+        });
+    }
+    
+    $(document).ready(function () {
+        map = new mxn.Mapstraction('mapdiv', 'leaflet');
+        
+        sanfran = new mxn.LatLonPoint(37.77540, -122.41941);
+
+        // put map on page
+        map.setCenterAndZoom(sanfran, 16);
+
+        // add a marker
+        marker = new mxn.Marker(sanfran);
+        map.addMarker(marker);
+        marker.addData({'infoBubble': 'This is a popup'})
+        marker.openBubble();
+
+        map.addSmallControls();
+        
+        map.load.addHandler(crime_refresh);
+        map.endPan.addHandler(crime_refresh);
+        map.changeZoom.addHandler(crime_refresh);
+        
+        map.load.fire(); // not automatically fired
+    });
+    </script>
+</body>
+</html>
