@@ -22,14 +22,15 @@
         var layers = {
             leaflet: new L.TileLayer("http://{s}.tile.cloudmade.com/8ee2a50541944fb9bcedded5165f09d9/997/256/{z}/{x}/{y}.png"),
             paledawn: new L.TileLayer("http://{s}.tile.cloudmade.com/8ee2a50541944fb9bcedded5165f09d9/998/256/{z}/{x}/{y}.png"),
-            midnight: new L.TileLayer("http://{s}.tile.cloudmade.com/8ee2a50541944fb9bcedded5165f09d9/999/256/{z}/{x}/{y}.png")
+            midnight: new L.TileLayer("http://{s}.tile.cloudmade.com/8ee2a50541944fb9bcedded5165f09d9/999/256/{z}/{x}/{y}.png"),
+            gray: new L.TileLayer("http://{s}.tile.cloudmade.com/8ee2a50541944fb9bcedded5165f09d9/20760/256/{z}/{x}/{y}.png")
         };
         
         map = new L.Map('mapdiv');
         crime_ids = new Array();
         
-        var sanfran = new L.LatLng(37.77540, -122.41941);
-        map.addLayer(layers.midnight).setView(sanfran, 13);
+        var sanfran = new L.LatLng(37.7917, -122.4225);
+        map.addLayer(layers.midnight).setView(sanfran, 14);
         
         map.addLayer(new L.TileLayer("http://localhost:8080/crime-heatmap/{z}/{x}/{y}.png", {opacity: 0.5}));
         
