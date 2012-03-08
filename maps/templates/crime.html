@@ -35,32 +35,35 @@
     <script type="text/javascript">
     
     function crime_refresh(event_name, event_source, event_args) {
-        bounds = event_source.getBounds();
+        var bounds = event_source.getBounds();
 
         // geodjango's Polygon.from_bbox() expects this format for the coordinates
-        xmin = bounds.sw.lon;
-        xmax = bounds.ne.lon;
-        ymin = bounds.sw.lat;
-        ymax = bounds.ne.lat;
-        bbox = xmin + "," + ymin + "," + xmax + "," + ymax;
+        var xmin = bounds.sw.lon;
+        var xmax = bounds.ne.lon;
+        var ymin = bounds.sw.lat;
+        var ymax = bounds.ne.lat;
+        var bbox = xmin + "," + ymin + "," + xmax + "," + ymax;
         
-        url = "/crime.json?bbox=" + bbox;
+        var url = "/crime.json?bbox=" + bbox;
 
         $.getJSON(url, function(data) {
-            event_source.addJSON(data);
+            var features = data.features;
+            
+            $.each(features, function(i, feature) {
+                console.log(feature);
+                event_source.addJSON(feature);
+            });
         });
     }
     
     $(document).ready(function () {
-        map = new mxn.Mapstraction('mapdiv', 'leaflet');
-        
-        sanfran = new mxn.LatLonPoint(37.77540, -122.41941);
+        var map = new mxn.Mapstraction('mapdiv', 'leaflet');
 
-        // put map on page
+        var sanfran = new mxn.LatLonPoint(37.77540, -122.41941);
         map.setCenterAndZoom(sanfran, 16);
 
         // add a marker
-        marker = new mxn.Marker(sanfran);
+        var marker = new mxn.Marker(sanfran);
         map.addMarker(marker);
         marker.addData({'infoBubble': 'This is a popup'})
         marker.openBubble();

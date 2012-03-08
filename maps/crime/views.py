@@ -1,11 +1,7 @@
 from crime.models import Crime
 from django.contrib.gis.geos import Polygon
 from django.http import HttpResponse
-from django.shortcuts import render
 import json
-
-def crime_map(request):
-    return render(request, 'crime.html')
 
 def crime_list(request):
     coords = request.GET['bbox'].split(',')
