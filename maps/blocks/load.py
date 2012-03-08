@@ -22,5 +22,11 @@ def water():
 
 
 def clean():
-    for w in Water.objects.all():
-        Block.objects.filter(poly__intersects=w.poly).delete()
+    ct = 1
+    
+    for b in Block.objects.all():
+        if Water.objects.filter(poly__intersects=b.poly).count():
+            b.delete()
+        
+        if ct % 1000 == 0: print ct
+        ct += 1
