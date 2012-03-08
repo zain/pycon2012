@@ -17,17 +17,45 @@
     <script src="http://leaflet.cloudmade.com/dist/leaflet.js" type="text/javascript" type="text/javascript"></script>
     
     <script type="text/javascript">
-    var styles = {
-        cloudmade: "http://{s}.tile.cloudmade.com/8ee2a50541944fb9bcedded5165f09d9/997/256/{z}/{x}/{y}.png"
-    };
     
     $(document).ready(function () {
-        // initialize the map on the "map" div
-        var map = new L.Map('mapdiv');
+        var layers = {
+            cloudmade: new L.TileLayer("http://{s}.tile.cloudmade.com/8ee2a50541944fb9bcedded5165f09d9/997/256/{z}/{x}/{y}.png"),
+            acetate: new L.TileLayer("http://a{s}.acetate.geoiq.com/tiles/acetate/{z}/{x}/{y}.png", {subdomains: ['a1', 'a2', 'a3']})
+        };
         
-        var cloudmade = new L.TileLayer(styles.cloudmade);
+        map = new L.Map('mapdiv');
+        crime_ids = new Array();
+        
         var sanfran = new L.LatLng(37.77540, -122.41941);
-        map.addLayer(cloudmade).setView(sanfran, 16);
+        map.addLayer(layers.cloudmade).setView(sanfran, 16);
+        
+        var crimes = new L.GeoJSON();
+        map.addLayer(crimes);
+        
+        function crime_refresh(event) {
+            var url = "/crime.json?bbox=" + map.getBounds().toBBoxString();
+
+            $.getJSON(url, function(data) {
+                
+                $.each(data.features, function(i, feature) {
+                    
+                    if ($.inArray(feature.id, crime_ids) == -1) {
+                        // not a duplicate, so we can add it
+                        crimes.addGeoJSON(feature);
+                        crime_ids.push(feature.id);
+                    }
+                    
+                });
+                
+                console.log(crime_ids.length + " dots on the screen.");
+            });
+        }
+        
+        map.on('moveend', crime_refresh);
+        map.on('zoomend', crime_refresh);
+        
+        crime_refresh(null); // not fired automatically
     });
     </script>
     

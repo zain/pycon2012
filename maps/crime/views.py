@@ -11,7 +11,7 @@ def crime_list(request):
     
     geojson_dict = {
         "type": "FeatureCollection",
-        "features": [crime_to_geojson(crime) for crime in crimes[::4]]
+        "features": [crime_to_geojson(crime) for crime in crimes]
     }
     
     return HttpResponse(json.dumps(geojson_dict), content_type='application/json')
@@ -25,5 +25,6 @@ def crime_to_geojson(crime):
         },
         "properties": {
             "description": crime.description
-        }
+        },
+        "id": crime.id,
     }
