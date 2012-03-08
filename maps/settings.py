@@ -118,6 +118,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     
     'maps.crime',
+    'maps.blocks',
 )
 
 # A sample logging configuration. The only tangible logging
